@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+
+import os
+
+from watchdog.events import RegexMatchingEventHandler
+
+
+class TextureHandler(RegexMatchingEventHandler):
+    THUMBNAIL_SIZE = (128, 128)
+    IMAGES_REGEX = [r".*[^_thumbnail]\.jpg$"]
+
+    def __init__(self):
+        super().__init__(self.IMAGES_REGEX)
+
+    def on_created(self, event):
+        self.process(event)
+
+    def process(self, event):
+        filename, ext = os.path.splitext(event.src_path)
+        filename = f"{filename}_thumbnail.jpg"
+
+        image = Image.open(event.src_path)
+        image = grayscale(image)
+        image.thumbnail(self.THUMBNAIL_SIZE)
+        image.save(filename)

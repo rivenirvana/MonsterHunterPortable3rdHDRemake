@@ -1,0 +1,126 @@
+---How to change the default textures of a PSP game with custom ones using the PPSSPP emulator?---
+
+1)Open the emulator and enter a game you wish to replace it's textures.
+2)Press the "Escape" key, enter the "Settings" menu, then go to "Tools" on the left panel.
+3)On the rigth panel, click on "Developer tools", and under the "Texture replacement" section click on "Create/Open textures.ini file..."
+
+---How to use the textures.ini file?---
+
+This is what you'll see when you open the file for the first time:
+
+---------------------------------------------------
+                                                   
+# This file is optional                            
+# for syntax explanation check:			   
+# - https://github.com/hrydgard/ppsspp/pull/8715   
+# - https://github.com/hrydgard/ppsspp/pull/8792   
+[options]                                          
+version = 1                                        
+hash = quick                                       
+                                                   
+[hashes]                                           
+                                                   
+[hashranges]                                      
+                                                   
+---------------------------------------------------
+
+- Every line that starts with # is just descriptive, you can use that to add notes to certain parts of the document.
+
+- Under the [options] section you can see:
+
+1)version = 1 (keep it like that)
+
+2)hash = quick
+There are different hashing methods, the default is "quick" but I heavily recommend using "xxh64", since it's faster and allows you to use more options.
+
+3)If you use "xxh64" you can use 2 more options:
+
+a)ignoreAddress = true
+This one is recommended in most cases since it replaces the first 8 digits of the hashes with 0, which prevents (mostly) the creation of repeated textures  when extracting them using PPSSPP.
+
+b)reduceHash = true
+Used as a last resort on some games where textures come out "wrong". DO NOT use it unless there's no other option. 
+
+-For more info read this: https://github.com/hrydgard/ppsspp/pull/9668
+
+
+Now, let's see how the textures.ini file would look with the aforementioned changes:
+
+---------------------------------------------------
+                                                   
+# This file is optional                            
+# for syntax explanation check:			   
+# - https://github.com/hrydgard/ppsspp/pull/8715   
+# - https://github.com/hrydgard/ppsspp/pull/8792   
+[options]                                          
+version = 1                                        
+hash = xxh64                                       
+ignoreAddress = true 
+                                            
+[hashes]                                           
+                                                   
+[hashranges]                                      
+                                                   
+---------------------------------------------------
+
+-Make the same changes to your textures.ini file and save the document. 
+-It's important that you do this before starting to extract textures since the hashes will be different depending on the hashing method you choose here.
+
+
+---How to extract textures from PSP games using the PPSSPP emulator?---
+
+Now that we configured the textures.ini file, lets start extracting textures from a game to see how the hashes are created.
+
+-Remember the settings menu on the emulator? Well, get to the "Texture replacement" section and activate the "Save new textures" option. 
+
+-Start playing the game and every texture that appears on screen will be saved on a folder called "new" placed on "<User>/documents/PPSSPP/PSP/TEXTURES/(the code of the game, for P3rd it would be NPJB40001)" in png format.
+-The name of each texture will be its hash, that you will then use on the textures.ini file (which is also located inside the NPJB40001 folder).
+-As long as the "Save new textures" option is active, the emulator will continue extracting every texture that appears on screen.
+
+
+---How to replace the original textures?---
+
+Now that we've configured the textures.ini file and extracted some textures, lets write down the hashes.
+
+This is what the textures.ini file would look with a couple of hashes writen down, see how you can use # to add notes?:
+
+---------------------------------------------------
+                                                   
+# This file is optional                           
+# for syntax explanation check:			   
+# - https://github.com/hrydgard/ppsspp/pull/8715   
+# - https://github.com/hrydgard/ppsspp/pull/8792   
+[options]                                          
+version = 1                                        
+hash = xxh64                                       
+ignoreAddress = true                               
+                                                   
+[hashes]
+
+#Monsters#                                         
+000000004e5c64ac47e2288d = Monsters/Arzuros.png
+
+#Weapons#
+00000000953ede2765bdd21a = Weapons/HM/01.png
+
+                                                   
+[hashranges]                                       
+                                                   
+---------------------------------------------------
+
+
+- Under the [hashes] section is where you will write down the hashes of the textures you extracted using the emulator and wish to change, alongside the route where the texture replacement is and its name.
+
+-For example: 000000004e5c64ac47e2288d = Monsters/Arzuros.png
+
+-The 24 digit code is the hash of a texture from MHP3rd, after that there's an = sign and the route of the texture replacement.
+-Replacement textures are placed inside the folder NPJB40001 (in the case of P3rd).
+-As you can see, you can create more folders and subfolders to organise your textures; so for example, under the NPJB40001 folder you can create a "Monsters" folder where you will place your custom textures that are gonna replace the original textures of the monsters from P3rd.
+-Let's say you created a custom texture for the monster "Arzuros", you can place it there and name it as you wish. I recommend using the png format for replacement textures.
+ 
+If you already extracted the textures you wanted from the game, you can turn off the "Save new textures" option.
+
+-Now, for the emulator to load you custom textures you have to activate the "Replace textures" option placed right below the "Save new textures" option.
+-Exit the game and enter again. Your custom textures should replace the orginal ones in-game.
+
+

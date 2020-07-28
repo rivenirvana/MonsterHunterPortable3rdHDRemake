@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 # watcher.py
 
+import os
+import sys
 import time
 
 from watchdog.observers import Observer
-from handler import TextureHandler, CatalogHandler
+from modules.handler import TextureHandler, CatalogHandler
 
 
 class TextureWatcher:
@@ -24,9 +26,16 @@ class TextureWatcher:
             self.stop()
         except Exception as e:
             print(e)
-            self.stop()
+            try:
+                self.stop()
+            except:
+                sys.exit(1)
 
     def start(self):
+        if not os.path.isdir(self.__game_dir):
+            os.mkdir(self.__game_dir)
+        if not os.path.isdir(self.__hash_dir):
+            os.mkdir(self.__hash_dir)
         self.__schedule()
         self.__event_observer.start()
 

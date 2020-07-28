@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # handler.py
 
-import os.path as osp
+import os
 
-from constants import HASH_DIR
+from modules.constants import HASH_DIR
 from watchdog.events import RegexMatchingEventHandler
 
 NULL_BYTE = "00000000"
@@ -33,7 +33,8 @@ class TextureHandler(RegexMatchingEventHandler):
         print("File moved.")
 
     def process(self, new_file):
-        hash, ext = osp.splitext(new_file.src_path)
+        path, ext = os.path.splitext(new_file.src_path)
+        hash = os.path.split(path)[-1]
         print(hash, ext)
 
         with open(HASH_FILE, "a") as f:

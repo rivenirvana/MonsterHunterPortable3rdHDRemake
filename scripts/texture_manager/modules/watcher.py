@@ -1,23 +1,29 @@
 #!/usr/bin/env python3
+# watcher.py
 
 import time
 
 from watchdog.observers import Observer
-from scripts.texture_manager.modules.handler import TextureHandler
+from handler import TextureHandler, CatalogHandler
 
 
 class TextureWatcher:
-    def __init__(self, src_path):
-        self.__src_path = src_path
-        self.__event_handler = TextureHandler()
+    def __init__(self, game_dir, hash_dir):
+        self.__game_dir = game_dir
+        self.__hash_dir = hash_dir
+        self.__texture_handler = TextureHandler()
+        self.__catalog_handler = CatalogHandler()
         self.__event_observer = Observer()
 
     def run(self):
-        self.start()
         try:
+            self.start()
             while True:
                 time.sleep(1)
         except KeyboardInterrupt:
+            self.stop()
+        except Exception as e:
+            print(e)
             self.stop()
 
     def start(self):
@@ -30,5 +36,10 @@ class TextureWatcher:
 
     def __schedule(self):
         self.__event_observer.schedule(
-            self.__event_handler, self.__src_path, recursive=True
+            self.__texture_handler, self.__game_dir, recursive=True
         )
+        print("Watching game dir...")
+        self.__event_observer.schedule(
+            self.__catalog_handler, self.__hash_dir, recursive=True
+        )
+        print("Watching hash dir...")
